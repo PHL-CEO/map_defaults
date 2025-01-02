@@ -34,13 +34,16 @@ region_primary_roads <-primary_roads()%>%
 
 region_roads <- rbind(region_roads_PA, region_roads_NJ)
 
-create_basemap <- function(show_border = TRUE) {
+create_basemap <- function() {
   ggplot() +
     geom_sf(data = bbox_sf, fill = "lightblue", color = NA) +
     geom_sf(data = region_counties_water, color = NA, fill = "white") +
     geom_sf(data = region_roads, color = alpha("grey20", .8), lwd = .2) +
     geom_sf(data = region_roads, color = alpha("grey90", .8), lwd = .1) +
     geom_sf(data = region_primary_roads, color = alpha("grey20", .8), lwd = .5) +
-    geom_sf(data = region_primary_roads, color = alpha("grey90", .8), lwd = .3) +
-    geom_sf(data = phl, color = ifelse(show_border, "blue", NA), fill = NA, lwd = 1)  # Toggle border color
+    geom_sf(data = region_primary_roads, color = alpha("grey90", .8), lwd = .3)
+}
+
+phl_border <- function() {
+  geom_sf(data = phl, color = "blue", fill = NA, lwd = 1)
 }
