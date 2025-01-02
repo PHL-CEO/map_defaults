@@ -39,9 +39,9 @@ create_basemap <- function() {
   ggplot() +
     geom_sf(data = bbox_sf, fill = alpha("lightblue", .5), color = NA) +
     geom_sf(data = region_counties_water, color = NA, fill = "white") +
-    geom_sf(data = region_roads, color = alpha("grey20", .6), lwd = .2) +
+    geom_sf(data = region_roads, color = alpha("grey40", .6), lwd = .2) +
     geom_sf(data = region_roads, color = alpha("grey90", .6), lwd = .1) +
-    geom_sf(data = region_primary_roads, color = alpha("grey20", .6), lwd = .5) +
+    geom_sf(data = region_primary_roads, color = alpha("grey40", .6), lwd = .5) +
     geom_sf(data = region_primary_roads, color = alpha("grey90", .6), lwd = .3) +
     coord_sf(xlim = c(phl_bbox[1], phl_bbox[3]), 
              ylim = c(phl_bbox[2], phl_bbox[4]), 
