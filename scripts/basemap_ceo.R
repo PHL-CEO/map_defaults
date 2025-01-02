@@ -10,10 +10,11 @@ phl <- counties(state = "PA") %>%
   st_transform(crs=phl_crs)
 
 phl_bbox <- st_bbox(phl)
-phl_bbox[1] <- phl_bbox[1] - 8000
-phl_bbox[2] <- phl_bbox[2] - 8000
-phl_bbox[3] <- phl_bbox[3] + 8000
-phl_bbox[4] <- phl_bbox[4] + 8000
+padding <- 8000
+phl_bbox[1] <- phl_bbox[1] - padding
+phl_bbox[2] <- phl_bbox[2] - padding
+phl_bbox[3] <- phl_bbox[3] + padding
+phl_bbox[4] <- phl_bbox[4] + padding
 
 bbox_sf <- st_as_sfc(phl_bbox)
 
@@ -41,9 +42,12 @@ create_basemap <- function() {
     geom_sf(data = region_roads, color = alpha("grey20", .8), lwd = .2) +
     geom_sf(data = region_roads, color = alpha("grey90", .8), lwd = .1) +
     geom_sf(data = region_primary_roads, color = alpha("grey20", .8), lwd = .5) +
-    geom_sf(data = region_primary_roads, color = alpha("grey90", .8), lwd = .3)
+    geom_sf(data = region_primary_roads, color = alpha("grey90", .8), lwd = .3) +
+    coord_sf(xlim = c(phl_bbox[1], phl_bbox[3]), 
+             ylim = c(phl_bbox[2], phl_bbox[4]), 
+             expand = TRUE)
 }
 
 phl_border <- function() {
-  geom_sf(data = phl, color = "blue", fill = NA, lwd = 1)
+  geom_sf(data = phl, color = "grey10", fill = NA, lwd = .8)
 }
