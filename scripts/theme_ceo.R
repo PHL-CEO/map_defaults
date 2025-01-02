@@ -5,7 +5,7 @@ theme_ceo <- function(){
       # panel
       panel.grid = element_blank(),
       panel.background = element_blank(),
-      panel.spacing = element_blank(),
+      #panel.spacing = element_blank(),
       # text
       plot.title.position = "plot",
       plot.title = element_text(
