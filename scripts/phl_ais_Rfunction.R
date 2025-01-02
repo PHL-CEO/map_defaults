@@ -1,5 +1,6 @@
 library(httr2)
 library(jsonlite)
+library(furrr)
 
 get_coordinates <- function(address) {
   api_key <- Sys.getenv("PHILA_API_KEY")  # Retrieve API key from environment variable
