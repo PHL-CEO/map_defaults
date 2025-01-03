@@ -43,6 +43,7 @@ create_basemap <- function() {
     geom_sf(data = region_roads, color = alpha("grey90", .6), lwd = .1) +
     geom_sf(data = region_primary_roads, color = alpha("grey40", .6), lwd = .5) +
     geom_sf(data = region_primary_roads, color = alpha("grey90", .6), lwd = .3) +
+    geom_sf(data = bbox_sf, fill = alpha("white", .3), color = NA) +
     coord_sf(xlim = c(phl_bbox[1], phl_bbox[3]), 
              ylim = c(phl_bbox[2], phl_bbox[4]), 
              expand = TRUE)
