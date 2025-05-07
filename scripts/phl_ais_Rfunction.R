@@ -1,7 +1,7 @@
 library(httr2)
 library(jsonlite)
 library(furrr)
-library(dplyr) 
+library(dplyr)  # Added for better data manipulation
 
 get_coordinates <- function(address) {
   api_key <- Sys.getenv("PHILA_API_KEY")
@@ -76,16 +76,13 @@ get_batch_coordinates <- function(df, address_column) {
     get_coordinates(address)
   })
 
-  # Create a data frame from the results
-  batch_results_df <- do.call(rbind, lapply(batch_results, function(x) {
-    data.frame(
-      lat = x$lat,
-      lon = x$lon,
-      zip_code = x$zip_code,
-      council_district = x$council_district,
-      stringsAsFactors = FALSE
-    )
-  }))
+  # Create a data frame from the results, handling potential NA values consistently
+  batch_results_df <- data.frame(
+    lat = sapply(batch_results, function(x) ifelse(is.null(x$lat), NA, x$lat)),
+    lon = sapply(batch_results, function(x) ifelse(is.null(x$lon), NA, x$lon)),
+    zip_code = sapply(batch_results, function(x) ifelse(is.null(x$zip_code), NA_character_, x$zip_code)),
+    council_district = sapply(batch_results, function(x) ifelse(is.null(x$council_district), NA_character_, x$council_district))
+  )
 
   batch_end_time <- Sys.time()
   message("Total time taken for batch processing: ", batch_end_time - batch_start_time)
