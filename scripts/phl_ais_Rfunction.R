@@ -83,13 +83,23 @@ get_batch_coordinates <- function(df, address_column) {
     get_coordinates(address)  # Call the geocoding function to get coordinates
   })
   
-  # Convert list of results into a data frame
-  batch_results_df <- purrr::map_dfr(batch_results, ~ data.frame(
-    lat = as.numeric(.x["lat"]), 
-    lon = as.numeric(.x["lon"]),
-    zip_code = as.character(.x["zip_code"]),
-    council_district = as.character(.x["council_district"])
-  ))
+  # Create empty data frame with the right structure first
+  batch_results_df <- data.frame(
+    lat = numeric(length(batch_results)),
+    lon = numeric(length(batch_results)),
+    zip_code = character(length(batch_results)),
+    council_district = character(length(batch_results)),
+    stringsAsFactors = FALSE
+  )
+  
+  # Fill in the data frame manually
+  for (i in 1:length(batch_results)) {
+    result <- batch_results[[i]]
+    batch_results_df$lat[i] <- as.numeric(result["lat"])
+    batch_results_df$lon[i] <- as.numeric(result["lon"])
+    batch_results_df$zip_code[i] <- as.character(result["zip_code"])
+    batch_results_df$council_district[i] <- as.character(result["council_district"])
+  }
   
   batch_end_time <- Sys.time()
   
