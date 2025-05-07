@@ -1,6 +1,7 @@
 library(httr2)
 library(jsonlite)
 library(furrr)
+library(dplyr) 
 
 get_coordinates <- function(address) {
   api_key <- Sys.getenv("PHILA_API_KEY")
@@ -67,6 +68,7 @@ get_batch_coordinates <- function(df, address_column) {
 
   plan(multisession, workers = 6)
 
+  # Process addresses and create a list of results
   batch_results <- future_map(df[[address_column]], function(address) {
     if (grepl("PO BOX", address, ignore.case = TRUE) || is.na(address) || address == "") {
       return(list(lat = NA, lon = NA, zip_code = NA, council_district = NA))
@@ -74,13 +76,23 @@ get_batch_coordinates <- function(df, address_column) {
     get_coordinates(address)
   })
 
-  batch_results_df <- purrr::map_dfr(batch_results, identity)
+  # Create a data frame from the results
+  batch_results_df <- do.call(rbind, lapply(batch_results, function(x) {
+    data.frame(
+      lat = x$lat,
+      lon = x$lon,
+      zip_code = x$zip_code,
+      council_district = x$council_district,
+      stringsAsFactors = FALSE
+    )
+  }))
 
   batch_end_time <- Sys.time()
   message("Total time taken for batch processing: ", batch_end_time - batch_start_time)
 
   return(batch_results_df)
 }
+
 geocode_dataframe <- function(df, address_column) {
   # Validate address column exists
   if (!address_column %in% colnames(df)) {
@@ -88,10 +100,10 @@ geocode_dataframe <- function(df, address_column) {
   }
   
   # Get batch geocoded results
-  batch_results_df <- get_batch_coordinates(df, address_column)  # Call the get_batch_coordinates function
+  batch_results_df <- get_batch_coordinates(df, address_column)
   
   # Combine the original dataframe with the geocoded results
-  df_with_coords <- cbind(df, batch_results_df)  # Add lat and lon columns to the original dataframe
+  df_with_coords <- cbind(df, batch_results_df)
   
-  return(df_with_coords)  # Return the data frame with coordinates added
+  return(df_with_coords)
 }
