@@ -74,7 +74,7 @@ get_batch_coordinates <- function(df, address_column) {
     get_coordinates(address)
   })
 
-  batch_results_df <- purrr::map_dfr(batch_results, ~ as.data.frame(.x, stringsAsFactors = FALSE))
+  batch_results_df <- purrr::map_dfr(batch_results, identity)
 
   batch_end_time <- Sys.time()
   message("Total time taken for batch processing: ", batch_end_time - batch_start_time)
